@@ -1,0 +1,36 @@
+ER-taVNS FINAL BUFFER IDENTIFICATION
+======================================
+
+No dedicated buffer marker is sent to EEG or EyeLink.
+
+AUTHORITATIVE BUFFER RULE
+-------------------------
+For every stimulation-paired trial N:
+  1. identify trial N from S10 (EEG) or VNS_TRIAL / stimulation metadata (EyeLink);
+  2. inspect the immediately following trial N+1;
+  3. verify N+1 is in the same block, is Global Standard (GS), and is unstimulated;
+  4. classify N+1 as post-stimulation buffer;
+  5. exclude N+1 from primary EEG and pupil analyses.
+
+EEG
+---
+S1-S4  Local-Global condition
+S5-S9  tones 1-5; S9/T5 is analysis anchor
+S10    stimulation-paired trial
+S11-S14 E2 visual figures
+S15    E2 response
+There is NO extra/repeated S1/S2 buffer TTL.
+
+EYELINK
+-------
+Normal LG_TONE / LG_T5 / LG_CONDITION / VNS_TRIAL / E2 visual-response
+messages remain.
+There is NO POST_STIM_BUFFER message in new acquisitions.
+Pupil buffer identity is reconstructed from N+1 during parsing/preprocessing.
+Historical POST_STIM_BUFFER messages are accepted by the parser for QC only.
+
+LEGACY PROTECTION
+-----------------
+Automatic N+1 exclusion is enabled only when the complete recording obeys the
+mandatory N+1 rule. Legacy pre-buffer recordings therefore are not silently
+reclassified as buffer-design recordings.
